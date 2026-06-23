@@ -1,8 +1,8 @@
-<?php 
-    require_once "./config/Database.php";
+<?php
+    require_once __DIR__ . "/config/Database.php";
 
     $database = new Database();
     $conn = $database->conectar();
 
-    echo "conectado com sucesso"
+    echo "conectado com sucesso";
 ?>
