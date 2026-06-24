@@ -29,13 +29,14 @@ $currentPage = $currentPage ?? '';
 
         <nav class="app-nav">
             <a href="/pages/dashboard.php" <?= $currentPage === 'dashboard' ? 'class="active"' : '' ?>>Painel</a>
-            <a href="/pages/CriaProduto.php" <?= $currentPage === 'produto' ? 'class="active"' : '' ?>>Produtos</a>
+            <a href="/pages/ListarProdutos.php" <?= $currentPage === 'listar' ? 'class="active"' : '' ?>>Inventário</a>
+            <a href="/pages/CriaProduto.php" <?= $currentPage === 'produto' ? 'class="active"' : '' ?>>Registar</a>
         </nav>
 
         <div class="app-header-right">
             <div class="app-user">
                 <div class="app-user-avatar">
-                    <?= strtoupper(mb_substr($_SESSION['nome'] ?? 'U', 0, 2)) ?>
+                    <?= strtoupper(substr($_SESSION['nome'] ?? 'U', 0, 2)) ?>
                 </div>
                 <div>
                     <div class="app-user-name"><?= htmlspecialchars($_SESSION['nome'] ?? '') ?></div>
