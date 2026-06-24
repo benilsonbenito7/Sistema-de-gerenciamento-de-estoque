@@ -1,8 +1,10 @@
 <?php
-    require_once __DIR__ . "/config/Database.php";
+session_start();
 
-    $database = new Database();
-    $conn = $database->conectar();
+if (!isset($_SESSION['id'])) {
+    header('Location: pages/login.php');
+    exit;
+}
 
-    echo "conectado com sucesso";
-?>
+header('Location: pages/dashboard.php');
+exit;
