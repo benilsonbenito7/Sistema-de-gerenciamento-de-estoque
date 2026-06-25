@@ -7,15 +7,15 @@ class Produto {
         $this->conn = $conn;
     }
 
-    public function criarProduto($codigo, $nome, $categoria, $preco, $quantidade) {
-        $sql = "INSERT INTO produtos (codigo, nome, categoria, preco, quantidade) VALUES (?, ?, ?, ?, ?)";
+    public function criarProduto($codigo, $nome, $categoria_id, $preco, $quantidade) {
+        $sql = "INSERT INTO produtos (codigo, nome, categoria_id, preco, quantidade) VALUES (?, ?, ?, ?, ?)";
         $query = $this->conn->prepare($sql);
 
         if ($query === false) {
             throw new Exception("Erro ao preparar a consulta: " . $this->conn->error);
         }
 
-        $query->bind_param("sssdi", $codigo, $nome, $categoria, $preco, $quantidade);
+        $query->bind_param("ssidi", $codigo, $nome, $categoria_id, $preco, $quantidade);
 
         if (!$query->execute()) {
             throw new Exception("Erro ao cadastrar produto: " . $query->error);
@@ -25,11 +25,70 @@ class Produto {
     }
 
     public function listar() {
-        $sql = "SELECT * FROM produtos ORDER BY nome ASC";
+        $sql = "SELECT p.*, c.nome AS categoria FROM produtos p LEFT JOIN categorias c ON p.categoria_id = c.id ORDER BY p.nome ASC";
         $query = $this->conn->prepare($sql);
         $query->execute();
         $resultado = $query->get_result();
         return $resultado->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function obterCategorias() {
+        $sql = "SELECT id, nome FROM categorias ORDER BY nome ASC";
+        $query = $this->conn->prepare($sql);
+        $query->execute();
+        $resultado = $query->get_result();
+        return $resultado->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function obterCategoriaPorNome($nome) {
+        $sql = "SELECT id FROM categorias WHERE nome = ? LIMIT 1";
+        $query = $this->conn->prepare($sql);
+
+        if ($query === false) {
+            throw new Exception("Erro ao preparar a consulta: " . $this->conn->error);
+        }
+
+        $query->bind_param("s", $nome);
+        $query->execute();
+        $resultado = $query->get_result();
+        $categoria = $resultado->fetch_assoc();
+        return $categoria ? (int)$categoria['id'] : null;
+    }
+
+    public function criarCategoria($nome) {
+        $nome = trim($nome);
+        if ($nome === '') {
+            throw new Exception("Nome de categoria inválido.");
+        }
+
+        $sql = "INSERT INTO categorias (nome) VALUES (?)";
+        $query = $this->conn->prepare($sql);
+
+        if ($query === false) {
+            throw new Exception("Erro ao preparar a consulta: " . $this->conn->error);
+        }
+
+        $query->bind_param("s", $nome);
+
+        if (!$query->execute()) {
+            throw new Exception("Erro ao criar categoria: " . $query->error);
+        }
+
+        return $query->insert_id;
+    }
+
+    public function criarOuBuscarCategoria($nome) {
+        $nome = trim($nome);
+        if ($nome === '') {
+            throw new Exception("Nome de categoria inválido.");
+        }
+
+        $categoriaId = $this->obterCategoriaPorNome($nome);
+        if ($categoriaId !== null) {
+            return $categoriaId;
+        }
+
+        return $this->criarCategoria($nome);
     }
 
     public function deletar($id) {

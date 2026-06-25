@@ -13,27 +13,35 @@ $db = new Database();
 $conn = $db->conectar();
 
 $produto = new Produto($conn);
+$categorias = $produto->obterCategorias();
 $message = "";
 $messageType = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $codigo = trim($_POST['codigo'] ?? '');
     $nome = trim($_POST['nome'] ?? '');
-    $categoria = trim($_POST['categoria'] ?? '');
+    $categoria_id = (int)($_POST['categoria_id'] ?? 0);
+    $nova_categoria = trim($_POST['nova_categoria'] ?? '');
     $preco = str_replace(',', '.', trim($_POST['preco'] ?? '0'));
     $quantidade = (int)($_POST['quantidade'] ?? 0);
 
-    if ($codigo !== '' && $nome !== '' && $categoria !== '' && $preco !== '' && $quantidade >= 0) {
-        try {
-            $produto->criarProduto($codigo, $nome, $categoria, $preco, $quantidade);
+    try {
+        if ($nova_categoria !== '') {
+            $categoria_id = $produto->criarOuBuscarCategoria($nova_categoria);
+        }
+
+        if ($codigo !== '' && $nome !== '' && $categoria_id > 0 && $preco !== '' && $quantidade >= 0) {
+            $produto->criarProduto($codigo, $nome, $categoria_id, $preco, $quantidade);
             $message = "Produto cadastrado com sucesso.";
             $messageType = "success";
-        } catch (Exception $e) {
-            $message = "Erro ao cadastrar: " . $e->getMessage();
+            // Recarrega categorias caso a nova tenha sido criada
+            $categorias = $produto->obterCategorias();
+        } else {
+            $message = "Preencha todos os campos corretamente.";
             $messageType = "error";
         }
-    } else {
-        $message = "Preencha todos os campos corretamente.";
+    } catch (Exception $e) {
+        $message = "Erro ao cadastrar: " . $e->getMessage();
         $messageType = "error";
     }
 }
@@ -80,8 +88,19 @@ require_once "layouts/header.php";
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="field-group">
-                            <label for="categoria">Categoria</label>
-                            <input id="categoria" type="text" name="categoria" required placeholder="Eletrónica, Roupa...">
+                            <label for="categoria_id">Categoria existente</label>
+                            <select id="categoria_id" name="categoria_id">
+                                <option value="">Selecione uma categoria...</option>
+                                <?php foreach ($categorias as $cat): ?>
+                                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nome']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="field-group">
+                            <label for="nova_categoria">Ou nova categoria</label>
+                            <input id="nova_categoria" type="text" name="nova_categoria" placeholder="Digite nova categoria...">
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
