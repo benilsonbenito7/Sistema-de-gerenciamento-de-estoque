@@ -91,6 +91,67 @@ class Produto {
         return $this->criarCategoria($nome);
     }
 
+    public function contarProdutos()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM produtos";
+        $query = $this->conn->prepare($sql);
+        $query->execute();
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        return (int)$row['total'];
+    }
+
+    public function contarBaixoStock($limite = 10)
+    {
+        $sql = "SELECT COUNT(*) AS total FROM produtos WHERE quantidade < ?";
+        $query = $this->conn->prepare($sql);
+        $query->bind_param("i", $limite);
+        $query->execute();
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        return (int)$row['total'];
+    }
+
+    public function contarCategorias()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM categorias";
+        $query = $this->conn->prepare($sql);
+        $query->execute();
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        return (int)$row['total'];
+    }
+
+    public function calcularValorTotal()
+    {
+        $sql = "SELECT COALESCE(SUM(preco * quantidade), 0) AS total FROM produtos";
+        $query = $this->conn->prepare($sql);
+        $query->execute();
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        return (float)$row['total'];
+    }
+
+    public function listarBaixoStock($limite = 10)
+    {
+        $sql = "SELECT p.*, c.nome AS categoria FROM produtos p LEFT JOIN categorias c ON p.categoria_id = c.id WHERE p.quantidade < ? ORDER BY p.quantidade ASC LIMIT 10";
+        $query = $this->conn->prepare($sql);
+        $query->bind_param("i", $limite);
+        $query->execute();
+        $result = $query->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function listarUltimasMovimentacoes($limite = 8)
+    {
+        $sql = "SELECT m.*, p.nome AS produto_nome, u.nome AS usuario_nome FROM movimentacoes m LEFT JOIN produtos p ON m.produto_id = p.id LEFT JOIN usuarios u ON m.usuario_id = u.id ORDER BY m.data_movimento DESC LIMIT ?";
+        $query = $this->conn->prepare($sql);
+        $query->bind_param("i", $limite);
+        $query->execute();
+        $result = $query->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
     public function deletar($id) {
         $this->conn->begin_transaction();
         try {

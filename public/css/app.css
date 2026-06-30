@@ -845,6 +845,135 @@ body {
   }
 }
 
+.card-kpi {
+  text-decoration: none;
+  display: block;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.card-kpi:hover {
+  border-color: var(--c-amber);
+  box-shadow: 0 2px 8px rgba(212, 135, 14, 0.08);
+}
+
+.card-kpi-tag {
+  font-family: var(--font-tag);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--c-amber);
+  margin-bottom: 0.5rem;
+}
+
+.card-kpi-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--c-deep);
+  line-height: 1;
+}
+
+.card-kpi-label {
+  font-size: 0.75rem;
+  color: var(--c-muted);
+  margin-top: 0.3rem;
+}
+
+.card-kpi-warn {
+  border-color: rgba(212, 135, 14, 0.3);
+}
+
+.card-kpi-warn .card-kpi-value {
+  color: var(--c-amber);
+}
+
+.card-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.card-section-tag {
+  font-family: var(--font-tag);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-amber);
+}
+
+.card-section-link {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--c-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.card-section-link:hover {
+  color: var(--c-amber);
+}
+
+.card-section-empty {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--c-muted);
+}
+
+.card-section-empty svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--c-border);
+  fill: none;
+  stroke-width: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.card-section-empty p {
+  font-size: 0.85rem;
+}
+
+.role-badge {
+  font-family: var(--font-tag);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.role-badge.role-admin {
+  background: rgba(212, 135, 14, 0.12);
+  color: var(--c-amber);
+}
+
+.role-badge.role-funcionario {
+  background: rgba(107, 114, 128, 0.12);
+  color: var(--c-muted);
+}
+
+.mov-badge {
+  font-family: var(--font-tag);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.mov-badge.mov-entrada {
+  background: rgba(5, 150, 105, 0.1);
+  color: var(--c-success);
+}
+
+.mov-badge.mov-saida {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--c-error);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
