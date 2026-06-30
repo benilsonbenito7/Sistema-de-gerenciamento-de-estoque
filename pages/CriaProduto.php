@@ -17,8 +17,27 @@ $categorias = $produto->obterCategorias();
 $message = "";
 $messageType = "";
 
+function gerateUniqueCode($conn) {
+    $prefix = 'SKU-';
+    $uniqueCode = '';
+    do {
+        $uniqueCode = $prefix . strtoupper(bin2hex(random_bytes(3)));
+        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM produtos WHERE codigo = ?");
+        if ($stmt === false) {
+            throw new Exception('Erro ao preparar a consulta: ' . $conn->error);
+        }
+        $stmt->bind_param('s', $uniqueCode);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $count = $row['total'] ?? 0;
+        $stmt->close();
+    } while ($count > 0);
+    return $uniqueCode;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $codigo = trim($_POST['codigo'] ?? '');
+    $codigo = gerateUniqueCode($conn);
     $nome = trim($_POST['nome'] ?? '');
     $categoria_id = (int)($_POST['categoria_id'] ?? 0);
     $nova_categoria = trim($_POST['nova_categoria'] ?? '');
@@ -74,12 +93,6 @@ require_once "layouts/header.php";
             <form method="POST">
 
                 <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                        <div class="field-group">
-                            <label for="codigo">Código</label>
-                            <input id="codigo" type="text" name="codigo" required placeholder="SKU-001">
-                        </div>
-                    </div>
                     <div class="col-12 col-md-6">
                         <div class="field-group">
                             <label for="nome">Nome</label>
