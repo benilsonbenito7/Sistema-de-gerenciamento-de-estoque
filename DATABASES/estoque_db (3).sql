@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Tempo de geração: 30-Jun-2026 às 13:51
--- Versão do servidor: 10.4.32-MariaDB
--- versão do PHP: 8.0.30
+-- Generation Time: Jun 30, 2026 at 04:11 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `estoque_db`
+-- Database: `estoque_db`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `categorias`
+-- Table structure for table `categorias`
 --
 
 CREATE TABLE `categorias` (
@@ -34,22 +34,23 @@ CREATE TABLE `categorias` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `categorias`
+-- Dumping data for table `categorias`
 --
 
 INSERT INTO `categorias` (`id`, `nome`, `created_at`) VALUES
 (1, 'Farmacos', '2026-06-25 11:52:04'),
 (2, 'Frutas', '2026-06-25 11:55:23'),
-(3, 'sapatos', '2026-06-25 12:10:15');
+(3, 'sapatos', '2026-06-25 12:10:15'),
+(4, 'roupas', '2026-06-30 12:02:06');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `movimentacoes`
+-- Table structure for table `movimentacoes`
 --
 
 CREATE TABLE `movimentacoes` (
-  `id` int(255) NOT NULL,
+  `id` int(10) UNSIGNED NOT NULL,
   `produto_id` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL,
   `tipo` enum('entrada','saida') NOT NULL,
@@ -58,14 +59,22 @@ CREATE TABLE `movimentacoes` (
   `data_movimento` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `movimentacoes`
+--
+
+INSERT INTO `movimentacoes` (`id`, `produto_id`, `usuario_id`, `tipo`, `quantidade`, `descricao`, `data_movimento`) VALUES
+(1, 10, 2, 'saida', 2, NULL, '2026-06-30 15:03:55'),
+(2, 10, 2, 'entrada', 6, 'entrando produtos', '2026-06-30 15:05:09');
+
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `produtos`
+-- Table structure for table `produtos`
 --
 
 CREATE TABLE `produtos` (
-  `id` int(255) NOT NULL,
+  `id` int(11) NOT NULL,
   `codigo` varchar(20) NOT NULL,
   `nome` varchar(100) NOT NULL,
   `categoria` varchar(100) DEFAULT NULL,
@@ -75,19 +84,19 @@ CREATE TABLE `produtos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `produtos`
+-- Dumping data for table `produtos`
 --
 
 INSERT INTO `produtos` (`id`, `codigo`, `nome`, `categoria`, `preco`, `quantidade`, `categoria_id`) VALUES
 (6, 'GHF-12', 'banana', NULL, 60.00, 8, 2),
 (7, 'efff-4', 'mangas', NULL, 70.00, 34, 2),
 (8, 'vbfb-43234', 'loropiana', NULL, 4000.40, 567, 3),
-(10, 'SKU-8AF60D', 'Batata', NULL, 234.00, 1000, 2);
+(10, 'SKU-60BE06', 'fraldas', NULL, 33.80, 10, 4);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `usuarios`
+-- Table structure for table `usuarios`
 --
 
 CREATE TABLE `usuarios` (
@@ -100,45 +109,93 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Extraindo dados da tabela `usuarios`
+-- Dumping data for table `usuarios`
 --
 
 INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `role`, `criado_em`) VALUES
 (1, 'Administrador', 'admin@estoque.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'admin', '2026-06-23 15:57:26'),
-(2, 'bbenito', 'bbenito@gmail.com', '$2y$12$PLJPacyi.e6kSqBf0gKxy.E7jFAoxHlEa7JSym3d00N4lQxr6Y3H6', 'admin', '2026-06-24 12:05:53');
+(2, 'ibraim augusto', 'ibra@gmail.com', '$2y$12$91FSxuEO91UwsTb2vZC0BerjyM3mBBEMmsIfFTGlrA.TLI8bOFL/i', 'admin', '2026-06-24 14:11:29');
 
 --
--- Índices para tabelas despejadas
+-- Indexes for dumped tables
 --
 
 --
--- Índices para tabela `produtos`
+-- Indexes for table `categorias`
+--
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome` (`nome`);
+
+--
+-- Indexes for table `movimentacoes`
+--
+ALTER TABLE `movimentacoes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_movimentacoes_produto` (`produto_id`),
+  ADD KEY `fk_movimentacoes_usuario` (`usuario_id`);
+
+--
+-- Indexes for table `produtos`
 --
 ALTER TABLE `produtos`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `codigo` (`codigo`),
+  ADD KEY `fk_produtos_categoria` (`categoria_id`);
 
 --
--- Índices para tabela `usuarios`
+-- Indexes for table `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- AUTO_INCREMENT de tabelas despejadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de tabela `produtos`
+-- AUTO_INCREMENT for table `categorias`
+--
+ALTER TABLE `categorias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `movimentacoes`
+--
+ALTER TABLE `movimentacoes`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT de tabela `usuarios`
+-- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `movimentacoes`
+--
+ALTER TABLE `movimentacoes`
+  ADD CONSTRAINT `fk_movimentacoes_produto` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_movimentacoes_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`),
+  ADD CONSTRAINT `movimentacoes_ibfk_1` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`),
+  ADD CONSTRAINT `movimentacoes_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Constraints for table `produtos`
+--
+ALTER TABLE `produtos`
+  ADD CONSTRAINT `fk_produtos_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
