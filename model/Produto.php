@@ -24,6 +24,32 @@ class Produto {
         return true;
     }
 
+    public function buscarPorId($id) {
+        $sql = "SELECT * FROM produtos WHERE id = ?";
+        $query = $this->conn->prepare($sql);
+        $query->bind_param("i", $id);
+        $query->execute();
+        $resultado = $query->get_result();
+        return $resultado->fetch_assoc();
+    }
+
+    public function atualizar($id, $codigo, $nome, $categoria_id, $preco, $quantidade) {
+        $sql = "UPDATE produtos SET codigo = ?, nome = ?, categoria_id = ?, preco = ?, quantidade = ? WHERE id = ?";
+        $query = $this->conn->prepare($sql);
+
+        if ($query === false) {
+            throw new Exception("Erro ao preparar a consulta: " . $this->conn->error);
+        }
+
+        $query->bind_param("ssidii", $codigo, $nome, $categoria_id, $preco, $quantidade, $id);
+
+        if (!$query->execute()) {
+            throw new Exception("Erro ao actualizar produto: " . $query->error);
+        }
+
+        return true;
+    }
+
     public function listar() {
         $sql = "SELECT p.*, c.nome AS categoria FROM produtos p LEFT JOIN categorias c ON p.categoria_id = c.id ORDER BY p.nome ASC";
         $query = $this->conn->prepare($sql);

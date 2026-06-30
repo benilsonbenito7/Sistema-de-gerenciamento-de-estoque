@@ -129,7 +129,7 @@ require_once "layouts/header.php";
                             <td class="cell-code"><?= htmlspecialchars($p['codigo']) ?></td>
                             <td class="cell-name"><?= htmlspecialchars($p['nome']) ?></td>
                             <td class="cell-category"><?= htmlspecialchars($p['categoria'] ?? '—') ?></td>
-                            <td class="cell-price">R$ <?= number_format($p['preco'], 2, ',', '.') ?></td>
+                            <td class="cell-price">Kz <?= number_format($p['preco'], 2, ',', '.') ?></td>
                             <td>
                                 <div class="stock-wrap">
                                     <div class="stock-bar">

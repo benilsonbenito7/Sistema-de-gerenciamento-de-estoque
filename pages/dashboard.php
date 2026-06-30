@@ -66,7 +66,7 @@ require_once "layouts/header.php";
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card-app card-kpi">
                     <div class="card-kpi-tag">VALOR TOTAL</div>
-                    <div class="card-kpi-value"><?= $valorTotal >= 1000 ? 'R$ ' . number_format($valorTotal, 0, ',', '.') : 'R$ ' . number_format($valorTotal, 2, ',', '.') ?></div>
+                    <div class="card-kpi-value"><?= $valorTotal >= 1000 ? 'Kz ' . number_format($valorTotal, 0, ',', '.') : 'Kz ' . number_format($valorTotal, 2, ',', '.') ?></div>
                     <div class="card-kpi-label">em inventário</div>
                 </div>
             </div>

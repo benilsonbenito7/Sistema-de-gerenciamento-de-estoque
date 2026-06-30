@@ -17,6 +17,17 @@ $categorias = $produto->obterCategorias();
 $message = "";
 $messageType = "";
 
+$isEditing = false;
+$produtoData = null;
+
+if (isset($_GET['editar'])) {
+    $editarId = (int)$_GET['editar'];
+    $produtoData = $produto->buscarPorId($editarId);
+    if ($produtoData) {
+        $isEditing = true;
+    }
+}
+
 function gerateUniqueCode($conn) {
     $prefix = 'SKU-';
     $uniqueCode = '';
@@ -37,7 +48,7 @@ function gerateUniqueCode($conn) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $codigo = gerateUniqueCode($conn);
+    $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
     $nome = trim($_POST['nome'] ?? '');
     $categoria_id = (int)($_POST['categoria_id'] ?? 0);
     $nova_categoria = trim($_POST['nova_categoria'] ?? '');
@@ -49,23 +60,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $categoria_id = $produto->criarOuBuscarCategoria($nova_categoria);
         }
 
-        if ($codigo !== '' && $nome !== '' && $categoria_id > 0 && $preco !== '' && $quantidade >= 0) {
-            $produto->criarProduto($codigo, $nome, $categoria_id, $preco, $quantidade);
-            $message = "Produto cadastrado com sucesso.";
-            $messageType = "success";
-            // Recarrega categorias caso a nova tenha sido criada
-            $categorias = $produto->obterCategorias();
+        if ($id > 0) {
+            if ($nome !== '' && $categoria_id > 0 && $preco !== '' && $quantidade >= 0) {
+                $produtoExistente = $produto->buscarPorId($id);
+                $produto->atualizar($id, $produtoExistente['codigo'], $nome, $categoria_id, (float)$preco, $quantidade);
+                $message = "Produto actualizado com sucesso.";
+                $messageType = "success";
+                $produtoData = $produto->buscarPorId($id);
+                $isEditing = true;
+                $categorias = $produto->obterCategorias();
+            } else {
+                $message = "Preencha todos os campos corretamente.";
+                $messageType = "error";
+                $produtoData = [
+                    'id' => $id,
+                    'nome' => $nome,
+                    'categoria_id' => $categoria_id,
+                    'preco' => (float)$preco,
+                    'quantidade' => $quantidade
+                ];
+                $isEditing = true;
+            }
         } else {
-            $message = "Preencha todos os campos corretamente.";
-            $messageType = "error";
+            $codigo = gerateUniqueCode($conn);
+            if ($codigo !== '' && $nome !== '' && $categoria_id > 0 && $preco !== '' && $quantidade >= 0) {
+                $produto->criarProduto($codigo, $nome, $categoria_id, (float)$preco, $quantidade);
+                $message = "Produto cadastrado com sucesso.";
+                $messageType = "success";
+                $categorias = $produto->obterCategorias();
+            } else {
+                $message = "Preencha todos os campos corretamente.";
+                $messageType = "error";
+            }
         }
     } catch (Exception $e) {
-        $message = "Erro ao cadastrar: " . $e->getMessage();
+        $message = "Erro ao " . ($id > 0 ? "actualizar" : "cadastrar") . ": " . $e->getMessage();
         $messageType = "error";
     }
 }
 
-$pageTitle = 'Cadastrar Produto';
+$pageTitle = $isEditing ? 'Editar Produto' : 'Cadastrar Produto';
 $currentPage = 'produto';
 require_once "layouts/header.php";
 ?>
@@ -74,8 +108,8 @@ require_once "layouts/header.php";
     <div class="app-container">
 
         <div class="page-header">
-            <h1>Cadastrar Produto</h1>
-            <p>Adicione um novo produto ao inventário.</p>
+            <h1><?= $isEditing ? 'Editar Produto' : 'Cadastrar Produto' ?></h1>
+            <p><?= $isEditing ? 'Altere as informações do produto.' : 'Adicione um novo produto ao inventário.' ?></p>
         </div>
 
         <?php if ($message !== ''): ?>
@@ -92,11 +126,15 @@ require_once "layouts/header.php";
         <div class="card-app" style="max-width:560px;">
             <form method="POST">
 
+                <?php if ($isEditing): ?>
+                <input type="hidden" name="id" value="<?= $produtoData['id'] ?>">
+                <?php endif; ?>
+
                 <div class="row g-3">
                     <div class="col-12 col-md-6">
                         <div class="field-group">
                             <label for="nome">Nome</label>
-                            <input id="nome" type="text" name="nome" required placeholder="Nome do produto">
+                            <input id="nome" type="text" name="nome" required placeholder="Nome do produto" value="<?= $isEditing ? htmlspecialchars($produtoData['nome']) : '' ?>">
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
@@ -105,7 +143,7 @@ require_once "layouts/header.php";
                             <select id="categoria_id" name="categoria_id">
                                 <option value="">Selecione uma categoria...</option>
                                 <?php foreach ($categorias as $cat): ?>
-                                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nome']) ?></option>
+                                <option value="<?= $cat['id'] ?>" <?= $isEditing && (int)$produtoData['categoria_id'] === (int)$cat['id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['nome']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -119,13 +157,13 @@ require_once "layouts/header.php";
                     <div class="col-12 col-md-6">
                         <div class="field-group">
                             <label for="preco">Preço</label>
-                            <input id="preco" type="text" name="preco" required placeholder="0,00">
+                            <input id="preco" type="text" name="preco" required placeholder="0,00" value="<?= $isEditing ? number_format((float)$produtoData['preco'], 2, ',', '') : '' ?>">
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="field-group">
                             <label for="quantidade">Quantidade</label>
-                            <input id="quantidade" type="number" name="quantidade" min="0" required placeholder="0">
+                            <input id="quantidade" type="number" name="quantidade" min="0" required placeholder="0" value="<?= $isEditing ? (int)$produtoData['quantidade'] : '' ?>">
                         </div>
                     </div>
                 </div>
@@ -133,7 +171,7 @@ require_once "layouts/header.php";
                 <div style="margin-top:1.5rem;">
                     <button type="submit" class="btn-primary-app">
                         <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        Salvar produto
+                        <?= $isEditing ? 'Actualizar produto' : 'Salvar produto' ?>
                     </button>
                 </div>
 
