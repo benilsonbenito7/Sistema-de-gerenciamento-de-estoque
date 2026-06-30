@@ -54,6 +54,7 @@ CREATE TABLE `movimentacoes` (
   `usuario_id` int(11) NOT NULL,
   `tipo` enum('entrada','saida') NOT NULL,
   `quantidade` int(11) NOT NULL,
+  `descricao` varchar(255) DEFAULT NULL,
   `data_movimento` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

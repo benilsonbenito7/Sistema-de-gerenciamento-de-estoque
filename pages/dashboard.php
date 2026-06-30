@@ -8,12 +8,14 @@ if (!isset($_SESSION['id'])) {
 
 require_once __DIR__ . "/../config/Database.php";
 require_once __DIR__ . "/../model/Produto.php";
+require_once __DIR__ . "/../model/Movimentacao.php";
 require_once __DIR__ . "/../model/Usuario.php";
 
 $db = new Database();
 $conn = $db->conectar();
 
 $produto = new Produto($conn);
+$movimentacao = new Movimentacao($conn);
 $usuarioModel = new Usuario($conn);
 
 $totalProdutos = $produto->contarProdutos();
@@ -21,7 +23,7 @@ $baixoStock = $produto->contarBaixoStock(10);
 $totalCategorias = $produto->contarCategorias();
 $valorTotal = $produto->calcularValorTotal();
 $produtosBaixoStock = $produto->listarBaixoStock(10);
-$ultimasMovimentacoes = $produto->listarUltimasMovimentacoes(8);
+$ultimasMovimentacoes = $movimentacao->listarUltimasMovimentacoes(8);
 $totalUsuarios = $usuarioModel->contarTodos();
 
 $pageTitle = 'Painel';

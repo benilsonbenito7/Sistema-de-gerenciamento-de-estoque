@@ -30,6 +30,7 @@ $currentPage = $currentPage ?? '';
         <nav class="app-nav">
             <a href="/pages/dashboard.php" <?= $currentPage === 'dashboard' ? 'class="active"' : '' ?>>Painel</a>
             <a href="/pages/ListarProdutos.php" <?= $currentPage === 'listar' ? 'class="active"' : '' ?>>Inventário</a>
+            <a href="/pages/Movimentacoes.php" <?= $currentPage === 'movimentacoes' ? 'class="active"' : '' ?>>Movimentações</a>
             <a href="/pages/CriaProduto.php" <?= $currentPage === 'produto' ? 'class="active"' : '' ?>>Registar</a>
             <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
             <a href="/pages/Usuarios.php" <?= $currentPage === 'usuarios' ? 'class="active"' : '' ?>>Usuários</a>

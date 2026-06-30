@@ -168,16 +168,6 @@ class Produto {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function listarUltimasMovimentacoes($limite = 8)
-    {
-        $sql = "SELECT m.*, p.nome AS produto_nome, u.nome AS usuario_nome FROM movimentacoes m LEFT JOIN produtos p ON m.produto_id = p.id LEFT JOIN usuarios u ON m.usuario_id = u.id ORDER BY m.data_movimento DESC LIMIT ?";
-        $query = $this->conn->prepare($sql);
-        $query->bind_param("i", $limite);
-        $query->execute();
-        $result = $query->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
-    }
-
     public function deletar($id) {
         $this->conn->begin_transaction();
         try {
