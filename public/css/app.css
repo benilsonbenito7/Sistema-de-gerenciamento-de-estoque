@@ -1,21 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap");
 
 :root {
-  --c-deep: #1A1D23;
+  --c-deep: #1a1d23;
   --c-deep-mid: #252830;
-  --c-paper: #E8ECF1;
-  --c-amber: #D4870E;
-  --c-amber-light: #F5B942;
-  --c-white: #FFFFFF;
-  --c-muted: #6B7280;
-  --c-muted-light: #9CA3AF;
-  --c-border: #D1D5DB;
-  --c-border-light: #E5E7EB;
-  --c-input-bg: #F3F4F6;
-  --c-error: #DC2626;
+  --c-paper: #e8ecf1;
+  --c-amber: #d4870e;
+  --c-amber-light: #f5b942;
+  --c-white: #ffffff;
+  --c-muted: #6b7280;
+  --c-muted-light: #9ca3af;
+  --c-border: #d1d5db;
+  --c-border-light: #e5e7eb;
+  --c-input-bg: #f3f4f6;
+  --c-error: #dc2626;
   --c-success: #059669;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-tag: 'JetBrains Mono', monospace;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-tag: "JetBrains Mono", monospace;
 }
 
 *,
@@ -113,7 +113,9 @@ body {
   text-decoration: none;
   padding: 0.4rem 0.75rem;
   border-radius: 6px;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
 }
 
 .app-nav a:hover {
@@ -174,17 +176,19 @@ body {
   color: var(--c-muted-light);
   text-decoration: none;
   padding: 0.35rem 0.75rem;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
   display: flex;
   align-items: center;
   gap: 0.4rem;
 }
 
 .app-logout:hover {
-  color: #F87171;
-  border-color: rgba(248,113,113,0.3);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
 }
 
 .app-logout svg {
@@ -243,7 +247,7 @@ body {
 .app-footer-divider {
   width: 1px;
   height: 14px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .app-footer-copy {
@@ -294,7 +298,9 @@ body {
   font-size: 0.875rem;
   color: var(--c-deep);
   background: var(--c-white);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   outline: none;
 }
 
@@ -351,14 +357,14 @@ body {
 }
 
 .alert-app-success {
-  background: #ECFDF5;
-  border: 1px solid #A7F3D0;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
   color: var(--c-success);
 }
 
 .alert-app-error {
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
   color: var(--c-error);
 }
 
@@ -411,7 +417,7 @@ body {
     background: var(--c-deep);
     flex-direction: column;
     padding: 0.5rem 1rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     margin-left: 0;
     gap: 0;
   }
@@ -485,7 +491,9 @@ body {
   color: var(--c-deep);
   background: var(--c-white);
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .list-search:focus {
@@ -756,7 +764,66 @@ body {
   color: var(--c-deep);
 }
 
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.report-panel {
+  background: var(--c-paper);
+  border: 1px solid var(--c-border-light);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.report-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.report-panel h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--c-deep);
+  margin: 0;
+}
+
+.report-panel p {
+  font-size: 0.82rem;
+  color: var(--c-muted);
+  margin-bottom: 0.75rem;
+}
+
+.report-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(212, 135, 14, 0.12);
+  color: var(--c-amber);
+  font-family: var(--font-tag);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 768px) {
+  .report-grid {
+    grid-template-columns: 1fr;
+  }
   .list-table thead {
     display: none;
   }
@@ -848,7 +915,9 @@ body {
 .card-kpi {
   text-decoration: none;
   display: block;
-  transition: box-shadow 0.2s, border-color 0.2s;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
 }
 
 .card-kpi:hover {
