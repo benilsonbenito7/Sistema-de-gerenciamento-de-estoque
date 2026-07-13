@@ -2,7 +2,7 @@
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
-if (!isset($_SESSION['id'])) {
+if (!isset($_SESSION['id']) || ($_SESSION['role'] ?? '') !== 'admin') {
     exit('Acesso negado.');
 }
 

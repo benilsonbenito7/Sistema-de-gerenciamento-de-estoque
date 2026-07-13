@@ -6,6 +6,11 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
+if (($_SESSION['role'] ?? '') !== 'admin') {
+    header("Location: dashboard.php");
+    exit;
+}
+
 require_once __DIR__ . "/../config/Database.php";
 require_once __DIR__ . "/../model/Produto.php";
 require_once __DIR__ . "/../model/Movimentacao.php";
